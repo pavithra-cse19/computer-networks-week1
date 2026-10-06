@@ -1,0 +1,43 @@
+import subprocess
+import platform
+
+# IP addresses of computers in the LAN
+computers = {
+    "PC1": "192.168.1.10",
+    "PC2": "192.168.1.11",
+    "PC3": "192.168.1.12"
+}
+
+def ping_computer(ip):
+    system = platform.system()
+
+    if system == "Windows":
+        command = ["ping", "-n", "4", ip]
+    else:
+        command = ["ping", "-c", "4", ip]
+
+    result = subprocess.run(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True
+    )
+
+    return result.returncode == 0, result.stdout
+
+
+print("======================================")
+print("       LAN CONNECTIVITY TEST")
+print("======================================")
+
+for name, ip in computers.items():
+    print(f"\nTesting {name} ({ip})...")
+
+    success, output = ping_computer(ip)
+
+    if success:
+        print(f"✓ {name} is reachable")
+    else:
+        print(f"✗ {name} is not reachable")
+
+    print(output)
